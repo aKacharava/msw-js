@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSW oAuth2</title>
+</head>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    button {
+        background-color: #caafea;
+        border: 1px solid #3f3f3f;
+        padding: 15px 20px;
+        cursor: pointer;
+        border-radius: 10px;
+    }
+</style>
+<body>
+    <h1>Hello World!</h1>
+    <button>Start oAuth2</button>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/msw/lib/iife/index.js"></script>
+<script src="./src/main.js"></script>
+<script>
+    document.querySelector("button").addEventListener("click", auth);
+</script>
+</html>
