@@ -6,4 +6,4 @@ export const defaultFetch = function (req) {
   });
 };
 
-export const FetchError = class FetchError extends NetworkError {};
+export const FetchError = class FetchError extends Error {};
