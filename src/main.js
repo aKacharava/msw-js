@@ -19,6 +19,7 @@ const worker = msw.setupWorker(
     } catch (error) {
       return errorResponse(error);
     }
+    oauth2Fetch(req);
     return res(
       ctx.status(200),
       ctx.json({
@@ -103,10 +104,12 @@ worker.start({
   },
 });
 
-document.querySelector("button").onclick = auth();
+document.querySelector("button").addEventListener("click", auth);
 
-async function auth(){
-  oauth2Fetch("https://authorize-server.mock/authorize");
+function auth() {
+  fetch(
+    "https://authorize-server.mock/authorize?response_type=code&client_id=clientId&state=*"
+  );
 }
 
 //FIXME: check correct error format for oauth2 
@@ -125,24 +128,40 @@ function checkParams(params, expected, optional=null) {
 		if (!params.has(expect)) {
 			throw new Error('Missing required parameter '+expect)
 		}
-		if (!matches(params.get(expect),expected[expect])) {
+		if (!paramMatches(params.get(expect),expected[expect])) {
 			throw new Error('Parameter '+expect+' does not match expected value: "'+expected[expect]+'"')
 		}
 	})
 	if (optional && typeof optional === 'object') {
 		Object.keys(optional).forEach(option => {
 			if (params.has(option)) {
-				if (!matches(params.get(option))) {
+				if (!paramMatches(params.get(option))) {
 					throw new Error('Parameter '+option+' does not match expected value: "'+optional[option]+'"')
 				}
 			}
 		})
 	}
 	if (typeof optional === 'object') {
-		params.keys().forEach(param => {
+		Object.keys(params).forEach(param => {
 			if (typeof expected[param] === 'undefined' && typeof optional[param] === 'undefined') {
 				throw new Error('Uknown parameter '+param+' in request');
 			}
 		})		
 	}
+}
+
+function paramMatches(searchParams, expectedParams) {
+  if (typeof searchParams === "string" && searchParams === expectedParams) {
+    return true;
+  }
+  else if (Array.isArray(searchParams)) {
+    searchParams.forEach(param => {
+      if(typeof param === 'string'){
+        return true;
+      }
+    })
+  }
+  else {
+    return false;
+  }
 }
